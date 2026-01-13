@@ -170,6 +170,7 @@ body {
     color: var(--text-primary);
 }
 
+.week-header,
 .week-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
