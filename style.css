@@ -463,6 +463,11 @@ body {
         font-size: 14px;
     }
 
+    .week-header {
+        visibility: hidden;
+        height: 0;
+    }
+
     /* Вертикальный календарь на мобильных */
     .week-header,
     .week-grid {
