@@ -412,7 +412,7 @@ body {
 /* === Адаптивность === */
 
 /* Мобильные устройства (до 768px) */
-@media (max-width: 768px) {
+@media (max-width: 1440px) {
     body {
         flex-direction: column;
         height: auto;
