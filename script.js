@@ -533,14 +533,14 @@ if (notesPanel && !notesPanel.querySelector('.notes-content')) {
     // Оборачиваем существующий контент в .notes-content
     const notesContent = document.createElement('div');
     notesContent.className = 'notes-content';
-    
+
     // Перемещаем все дочерние элементы кроме ресайзера
     while (notesPanel.children.length > 0 && notesPanel.firstChild !== resizer) {
         notesContent.appendChild(notesPanel.firstChild);
     }
-    
+
     notesPanel.insertBefore(notesContent, resizer);
-    
+
     // Добавляем кнопку сворачивания
     const toggleBtn = document.createElement('button');
     toggleBtn.className = 'toggle-notes-btn';
@@ -555,10 +555,10 @@ const toggleNotesBtn = document.getElementById('toggleNotesBtn');
 if (toggleNotesBtn && notesPanel) {
     // Функция обновления состояния в зависимости от ширины экрана
     function updateToggleState() {
-        if (window.innerWidth <= 1440) {
-            // На экранах <= 1440px — показываем кнопку и применяем сохраненное состояние
+        if (window.innerWidth < 1440) { // ← ИЗМЕНЕНО: строго меньше 1440
+            // На экранах < 1440px — показываем кнопку и применяем сохраненное состояние
             toggleNotesBtn.style.display = 'flex';
-            
+
             const isCollapsed = localStorage.getItem('notesPanelCollapsed') === 'true';
             if (isCollapsed) {
                 notesPanel.classList.add('collapsed');
@@ -568,7 +568,7 @@ if (toggleNotesBtn && notesPanel) {
                 toggleNotesBtn.textContent = '📁';
             }
         } else {
-            // На экранах > 1440px — всегда развернуто и скрываем кнопку
+            // На экранах >= 1440px — всегда развернуто и скрываем кнопку
             notesPanel.classList.remove('collapsed');
             toggleNotesBtn.style.display = 'none';
             localStorage.setItem('notesPanelCollapsed', 'false');
@@ -580,8 +580,8 @@ if (toggleNotesBtn && notesPanel) {
 
     // Обработчик клика (работает только когда кнопка видна)
     toggleNotesBtn.addEventListener('click', () => {
-        if (window.innerWidth > 1440) return; // дополнительная защита
-        
+        if (window.innerWidth >= 1440) return; // ← ИЗМЕНЕНО: защита для >= 1440
+
         const isNowCollapsed = notesPanel.classList.contains('collapsed');
         if (isNowCollapsed) {
             notesPanel.classList.remove('collapsed');
