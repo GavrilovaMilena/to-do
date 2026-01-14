@@ -66,9 +66,11 @@ body {
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    width: 270px; /* фиксированная ширина */
+    width: 270px;
+    /* фиксированная ширина */
     box-shadow: rgba(0, 0, 0, 0.3) 5px 0px 20px;
-    flex-shrink: 0; /* не сжимается */
+    flex-shrink: 0;
+    /* не сжимается */
 }
 
 .notes-content {
@@ -296,11 +298,41 @@ body {
 }
 
 .task-checkbox {
-    width: 12px;
-    height: 12px;
+    width: 18px;
+    height: 18px;
     margin-right: 8px;
     cursor: pointer;
     flex-shrink: 0;
+    border-radius: 4px;
+    /* скругление углов */
+    border: 2px solid var(--border-color);
+    appearance: none;
+    /* убираем стандартный вид */
+    background: var(--bg-panel);
+    transition: all 0.2s ease;
+}
+
+/* Состояние при наведении */
+.task-checkbox:hover {
+    border-color: var(--text-primary);
+}
+
+/* Состояние "выбрано" */
+.task-checkbox:checked {
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+/* Галочка внутри */
+.task-checkbox:checked::after {
+    content: '✓';
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    line-height: 16px;
+    color: white;
+    font-size: 12px;
 }
 
 .task-text {
@@ -613,7 +645,7 @@ body {
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
-@media (min-width: 768px) and (max-width: 1024px)  {
+@media (min-width: 768px) and (max-width: 1024px) {
     .notes-panel {
         min-width: 220px;
         max-width: 300px;
