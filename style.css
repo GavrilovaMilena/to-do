@@ -596,7 +596,7 @@ body {
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
-@media (max-width: 769px) {
+@media (min-width: 769px) and (max-width: 1024px)  {
     .notes-panel {
         min-width: 220px;
         max-width: 300px;
