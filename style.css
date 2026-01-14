@@ -78,13 +78,14 @@ body {
     flex-direction: column;
     height: 100%;
     transition: opacity 0.3s ease;
+    margin-bottom: 20px;
 }
 
 .notes-panel.collapsed {
     width: 48px !important;
     min-width: 48px !important;
     max-width: 48px !important;
-    padding: 0;
+    padding-bottom: 20px;
     align-items: center;
 }
 
@@ -103,7 +104,6 @@ body {
     height: 36px;
     border-radius: 50%;
     margin-top: auto;
-    margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
