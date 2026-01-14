@@ -84,7 +84,27 @@ themeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-theme');
     const isDark = body.classList.contains('dark-theme');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    themeToggle.textContent = isDark ? '☀️' : '🌙';
+    // Обновляем SVG-иконку
+    const themeIcon = themeToggle.querySelector('svg');
+    if (isDark) {
+        // Солнце
+        themeIcon.innerHTML = `
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    `;
+    } else {
+        // Луна
+        themeIcon.innerHTML = `
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    `;
+    }
 });
 
 // === Ресайзер ===
@@ -371,7 +391,11 @@ function renderTasks(dateStr) {
 
         const colorBtn = document.createElement('button');
         colorBtn.className = 'task-btn';
-        colorBtn.innerHTML = '✏️';
+        colorBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+    </svg>
+`;
         colorBtn.title = 'Цвет и удалить';
         const colorPicker = document.createElement('div');
         colorPicker.className = 'color-picker';
@@ -394,7 +418,13 @@ function renderTasks(dateStr) {
         const deleteOption = document.createElement('div');
         deleteOption.className = 'color-option';
         deleteOption.title = 'Удалить задачу';
-        deleteOption.innerHTML = '🗑️';
+        deleteOption.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 6h18"></path>
+        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+    </svg>
+`;
         deleteOption.style.backgroundColor = '#ffdddd';
         deleteOption.style.color = '#d32f2f';
         deleteOption.style.border = '1px solid #ffcdd2';

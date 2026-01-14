@@ -203,7 +203,6 @@ body {
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    font-size: 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -215,6 +214,16 @@ body {
 .nav-btn:hover,
 .theme-toggle:hover {
     background: var(--button-hover);
+}
+
+.nav-btn svg,
+.theme-toggle svg,
+.profile-btn svg {
+    display: block;
+}
+
+.task-btn svg {
+    display: block;
 }
 
 .week-label {
