@@ -66,11 +66,9 @@ body {
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    min-width: 270px;
-    max-width: 500px;
+    width: 270px; /* фиксированная ширина */
     box-shadow: rgba(0, 0, 0, 0.3) 5px 0px 20px;
-    position: relative;
-    transition: width 0.3s ease;
+    flex-shrink: 0; /* не сжимается */
 }
 
 .notes-content {

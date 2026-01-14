@@ -59,7 +59,6 @@ let currentMonday = getMonday(new Date());
 let isRendering = false;
 
 const notesPanel = document.getElementById('notesPanel');
-const resizer = document.getElementById('resizer');
 const weekHeader = document.getElementById('weekHeader');
 const weekGrid = document.getElementById('weekGrid');
 const weekLabelEl = document.getElementById('weekLabel');
@@ -122,33 +121,6 @@ themeToggle.addEventListener('click', () => {
         themeIcon.innerHTML = `
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         `;
-    }
-});
-
-// === Ресайзер ===
-let isResizing = false;
-resizer.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    document.body.style.cursor = 'col-resize';
-    document.body.style.userSelect = 'none';
-    e.preventDefault();
-});
-
-document.addEventListener('mousemove', (e) => {
-    if (!isResizing) return;
-    const containerRect = document.body.getBoundingClientRect();
-    let newWidth = e.clientX - containerRect.left;
-    newWidth = Math.max(180, Math.min(500, newWidth));
-    notesPanel.style.width = newWidth + 'px';
-});
-
-document.addEventListener('mouseup', () => {
-    if (isResizing) {
-        isResizing = false;
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-        const width = parseInt(getComputedStyle(notesPanel).width);
-        localStorage.setItem('notesPanelWidth', width);
     }
 });
 
