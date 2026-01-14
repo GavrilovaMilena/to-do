@@ -596,7 +596,7 @@ body {
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px)  {
+@media (min-width: 320px) and (max-width: 1024px)  {
     .notes-panel {
         min-width: 220px;
         max-width: 300px;
@@ -626,32 +626,5 @@ body {
     .week-header,
     .week-grid {
         padding: 0 10px;
-    }
-}
-
-/* Очень маленькие экраны (< 480px) */
-@media (max-width: 480px) {
-    .week-nav {
-        padding: 10px 0;
-    }
-
-    .nav-btn,
-    .theme-toggle {
-        width: 26px;
-        height: 26px;
-    }
-
-    .week-label {
-        font-size: 14px;
-    }
-
-    #monthYearLabel {
-        font-size: 18px;
-    }
-
-    .mini-cal-day {
-        width: 18px;
-        height: 18px;
-        font-size: 9px;
     }
 }
