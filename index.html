@@ -13,10 +13,15 @@
 <body>
     <!-- Левая панель заметок -->
     <div class="notes-panel" id="notesPanel">
-        <div id="monthYearLabel">Январь 2026</div>
-        <div id="miniCalendar"></div>
-        <h2>Заметки</h2>
-        <textarea class="notes-textarea" id="notes"></textarea>
+        <div class="month-header">
+            <div id="monthYearLabel">Январь 2026</div>
+            <button class="toggle-notes-btn" id="toggleNotesBtn" title="Свернуть/развернуть">📁</button>
+        </div>
+        <div class="notes-content" id="notesContent">
+            <div id="miniCalendar"></div>
+            <h2 id="notesTitle" class="editable-title">Заметки</h2>
+            <textarea class="notes-textarea" id="notes"></textarea>
+        </div>
     </div>
 
     <!-- Ресайзер -->

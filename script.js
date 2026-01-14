@@ -290,6 +290,32 @@ function renderWeek(monday) {
     }, 50);
 }
 
+// === Сворачивание заметок ===
+const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+const notesContent = document.getElementById('notesContent');
+
+// Загрузка состояния
+const isCollapsed = localStorage.getItem('notesCollapsed') === 'true';
+if (isCollapsed) {
+    notesContent.classList.add('collapsed');
+    toggleNotesBtn.textContent = '📂'; // развернуть
+} else {
+    toggleNotesBtn.textContent = '📁'; // свернуть
+}
+
+toggleNotesBtn.addEventListener('click', () => {
+    const isNowCollapsed = notesContent.classList.contains('collapsed');
+    if (isNowCollapsed) {
+        notesContent.classList.remove('collapsed');
+        toggleNotesBtn.textContent = '📁';
+        localStorage.setItem('notesCollapsed', 'false');
+    } else {
+        notesContent.classList.add('collapsed');
+        toggleNotesBtn.textContent = '📂';
+        localStorage.setItem('notesCollapsed', 'true');
+    }
+});
+
 function addTask(dateStr, text) {
     const tasks = getTasksForDate(dateStr);
     tasks.push({ text, completed: false, bgColor: null });
