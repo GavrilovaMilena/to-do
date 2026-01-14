@@ -31,11 +31,18 @@
     <!-- Календарь -->
     <div class="calendar-container">
         <div class="week-nav">
-            <button class="nav-btn" id="prevWeek">⭠</button>
-            <div class="week-label" id="weekLabel">Неделя</div>
-            <button class="nav-btn" id="nextWeek">⭢</button>
-            <button class="nav-btn" id="todayBtn" title="Текущая неделя">📅</button>
-            <button class="theme-toggle" id="themeToggle" title="Сменить тему">🌙</button>
+            <!-- Центральная панель навигации -->
+            <div class="week-nav-center">
+                <button class="nav-btn" id="prevWeek" title="Предыдущая неделя">⭠</button>
+                <div class="week-label" id="weekLabel">Неделя</div>
+                <button class="nav-btn" id="nextWeek" title="Следующая неделя">⭢</button>
+                <button class="nav-btn" id="todayBtn" title="Текущая неделя">📅</button>
+            </div>
+
+            <!-- Правая часть: только тема -->
+            <div class="week-nav-right">
+                <button class="theme-toggle" id="themeToggle" title="Сменить тему">🌙</button>
+            </div>
         </div>
         <div class="week-header" id="weekHeader"></div>
         <div class="week-grid" id="weekGrid"></div>

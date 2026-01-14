@@ -170,17 +170,26 @@ body {
 
 .week-nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding: 20px 0 20px;
+    padding: 20px 0;
     background-color: #ffffff;
     box-shadow: 5px 5px 10px rgb(0 0 0 / 8%);
 }
 
 .dark-theme .week-nav {
     background-color: #1e1e1e;
-    box-shadow: 5px 5px 10px rgb(255 255 255 / 25%)
+    box-shadow: 5px 5px 10px rgb(255 255 255 / 25%);
+}
+
+.week-nav-center {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    flex: 1;
+    /* занимает всё доступное пространство */
 }
 
 .dark-theme .notes-panel {
@@ -212,6 +221,14 @@ body {
     font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
+    min-width: 140px;
+    text-align: center;
+}
+
+.week-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .week-header,
@@ -566,7 +583,7 @@ body {
     .notes-textarea {
         font-size: 13px;
         padding: 8px;
-    }  
+    }
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
