@@ -390,6 +390,20 @@ function renderTasks(dateStr) {
         const colorPicker = document.createElement('div');
         colorPicker.className = 'color-picker';
 
+        // === Опция "Без цвета" ===
+        const noColorOption = document.createElement('div');
+        noColorOption.className = 'color-option';
+        noColorOption.style.backgroundColor = 'transparent';
+        noColorOption.style.border = '2px dashed var(--border-color)';
+        noColorOption.title = 'Без цвета';
+        noColorOption.addEventListener('click', () => {
+            task.bgColor = null; // Убираем цвет
+            saveTasksForDate(dateStr, tasks);
+            renderTasks(dateStr);
+            colorPicker.style.display = 'none';
+        });
+        colorPicker.appendChild(noColorOption);
+
         // Цветовые опции
         Object.entries(COLORS).forEach(([name, hex]) => {
             const colorOption = document.createElement('div');

@@ -602,8 +602,24 @@ body {
     background: #b71c1c;
 }
 
-/* === Адаптивность === */
+.color-option {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 2px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+/* Прозрачная опция с пунктирной рамкой */
+.color-option[style*="dashed"] {
+    background: transparent !important;
+}
+
+/* === Адаптивность === */
 /* Мобильные устройства (до 768px) */
 @media (max-width: 1440px) {
     body {
