@@ -566,11 +566,7 @@ body {
     .notes-textarea {
         font-size: 13px;
         padding: 8px;
-    }
-
-    .toggle-notes-btn {
-        display: none;
-    }    
+    }  
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
