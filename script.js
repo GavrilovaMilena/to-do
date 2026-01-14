@@ -100,7 +100,7 @@ themeToggle.addEventListener('click', () => {
     body.classList.toggle('dark-theme');
     const isDark = body.classList.contains('dark-theme');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    
+
     // Обновляем SVG-иконку
     const themeIcon = themeToggle.querySelector('svg');
     if (isDark) {
@@ -416,11 +416,44 @@ function renderTasks(dateStr) {
     </svg>
 `;
         deleteOption.addEventListener('click', () => {
-            const tasks = getTasksForDate(dateStr);
-            tasks.splice(index, 1);
-            saveTasksForDate(dateStr, tasks);
-            renderTasks(dateStr);
-            colorPicker.style.display = 'none';
+            // Создаем кастомный попап подтверждения
+            const popup = document.createElement('div');
+            popup.className = 'confirm-popup';
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <h3>Удалить задачу?</h3>
+                    <p>Это действие нельзя отменить.</p>
+                    <div class="popup-buttons">
+                        <button class="popup-btn cancel">Отмена</button>
+                        <button class="popup-btn delete">Удалить</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(popup);
+
+            // Обработчики кнопок
+            popup.querySelector('.cancel').onclick = () => {
+                document.body.removeChild(popup);
+                colorPicker.style.display = 'none';
+            };
+
+            popup.querySelector('.delete').onclick = () => {
+                const tasks = getTasksForDate(dateStr);
+                tasks.splice(index, 1);
+                saveTasksForDate(dateStr, tasks);
+                renderTasks(dateStr);
+                document.body.removeChild(popup);
+                colorPicker.style.display = 'none';
+            };
+
+            // Закрытие по клику вне попапа
+            popup.onclick = (e) => {
+                if (e.target === popup) {
+                    document.body.removeChild(popup);
+                    colorPicker.style.display = 'none';
+                }
+            };
         });
         colorPicker.appendChild(deleteOption);
 
