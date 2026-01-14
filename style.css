@@ -475,7 +475,7 @@ body {
     }
 
     .toggle-notes-btn {
-        display: none !important;
+        display: none;
     }
 
     #monthYearLabel {
