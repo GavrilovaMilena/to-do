@@ -479,6 +479,25 @@ body {
     opacity: 0.4;
 }
 
+.color-option.delete-option {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(205, 36, 36);
+    background: none;
+    border: none;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.color-option.delete-option:hover {
+    background-color: rgba(205, 36, 36, 0.1);
+    transform: scale(1.1);
+}
+
 /* === Адаптивность === */
 
 /* Мобильные устройства (до 768px) */
@@ -596,7 +615,7 @@ body {
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
-@media (min-width: 320px) and (max-width: 1024px)  {
+@media (min-width: 768px) and (max-width: 1024px)  {
     .notes-panel {
         min-width: 220px;
         max-width: 300px;
@@ -626,5 +645,32 @@ body {
     .week-header,
     .week-grid {
         padding: 0 10px;
+    }
+}
+
+/* Очень маленькие экраны (< 480px) */
+@media (max-width: 480px) {
+    .week-nav {
+        padding: 10px 0;
+    }
+
+    .nav-btn,
+    .theme-toggle {
+        width: 26px;
+        height: 26px;
+    }
+
+    .week-label {
+        font-size: 14px;
+    }
+
+    #monthYearLabel {
+        font-size: 18px;
+    }
+
+    .mini-cal-day {
+        width: 18px;
+        height: 18px;
+        font-size: 9px;
     }
 }
