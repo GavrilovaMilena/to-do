@@ -290,32 +290,6 @@ function renderWeek(monday) {
     }, 50);
 }
 
-// === Сворачивание заметок ===
-const toggleNotesBtn = document.getElementById('toggleNotesBtn');
-const notesContent = document.getElementById('notesContent');
-
-// Загрузка состояния
-const isCollapsed = localStorage.getItem('notesCollapsed') === 'true';
-if (isCollapsed) {
-    notesContent.classList.add('collapsed');
-    toggleNotesBtn.textContent = '📂'; // развернуть
-} else {
-    toggleNotesBtn.textContent = '📁'; // свернуть
-}
-
-toggleNotesBtn.addEventListener('click', () => {
-    const isNowCollapsed = notesContent.classList.contains('collapsed');
-    if (isNowCollapsed) {
-        notesContent.classList.remove('collapsed');
-        toggleNotesBtn.textContent = '📁';
-        localStorage.setItem('notesCollapsed', 'false');
-    } else {
-        notesContent.classList.add('collapsed');
-        toggleNotesBtn.textContent = '📂';
-        localStorage.setItem('notesCollapsed', 'true');
-    }
-});
-
 function addTask(dateStr, text) {
     const tasks = getTasksForDate(dateStr);
     tasks.push({ text, completed: false, bgColor: null });
@@ -552,3 +526,76 @@ todayBtn.addEventListener('click', () => {
 });
 
 renderWeek(currentMonday);
+
+// === Полное сворачивание панели заметок (только до 1440px) ===
+// Создаем структуру, если её нет
+if (notesPanel && !notesPanel.querySelector('.notes-content')) {
+    // Оборачиваем существующий контент в .notes-content
+    const notesContent = document.createElement('div');
+    notesContent.className = 'notes-content';
+    
+    // Перемещаем все дочерние элементы кроме ресайзера
+    while (notesPanel.children.length > 0 && notesPanel.firstChild !== resizer) {
+        notesContent.appendChild(notesPanel.firstChild);
+    }
+    
+    notesPanel.insertBefore(notesContent, resizer);
+    
+    // Добавляем кнопку сворачивания
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'toggle-notes-btn';
+    toggleBtn.id = 'toggleNotesBtn';
+    toggleBtn.title = 'Свернуть/развернуть';
+    toggleBtn.textContent = '📁';
+    notesPanel.insertBefore(toggleBtn, resizer);
+}
+
+const toggleNotesBtn = document.getElementById('toggleNotesBtn');
+
+if (toggleNotesBtn && notesPanel) {
+    // Функция обновления состояния в зависимости от ширины экрана
+    function updateToggleState() {
+        if (window.innerWidth <= 1440) {
+            // На экранах <= 1440px — показываем кнопку и применяем сохраненное состояние
+            toggleNotesBtn.style.display = 'flex';
+            
+            const isCollapsed = localStorage.getItem('notesPanelCollapsed') === 'true';
+            if (isCollapsed) {
+                notesPanel.classList.add('collapsed');
+                toggleNotesBtn.textContent = '📂';
+            } else {
+                notesPanel.classList.remove('collapsed');
+                toggleNotesBtn.textContent = '📁';
+            }
+        } else {
+            // На экранах > 1440px — всегда развернуто и скрываем кнопку
+            notesPanel.classList.remove('collapsed');
+            toggleNotesBtn.style.display = 'none';
+            localStorage.setItem('notesPanelCollapsed', 'false');
+        }
+    }
+
+    // Инициализация при загрузке
+    updateToggleState();
+
+    // Обработчик клика (работает только когда кнопка видна)
+    toggleNotesBtn.addEventListener('click', () => {
+        if (window.innerWidth > 1440) return; // дополнительная защита
+        
+        const isNowCollapsed = notesPanel.classList.contains('collapsed');
+        if (isNowCollapsed) {
+            notesPanel.classList.remove('collapsed');
+            toggleNotesBtn.textContent = '📁';
+            localStorage.setItem('notesPanelCollapsed', 'false');
+        } else {
+            notesPanel.classList.add('collapsed');
+            toggleNotesBtn.textContent = '📂';
+            localStorage.setItem('notesPanelCollapsed', 'true');
+        }
+    });
+
+    // Обработка изменения размера окна
+    window.addEventListener('resize', () => {
+        updateToggleState();
+    });
+}

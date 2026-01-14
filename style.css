@@ -69,6 +69,50 @@ body {
     min-width: 270px;
     max-width: 500px;
     box-shadow: rgba(0, 0, 0, 0.3) 5px 0px 20px;
+    position: relative;
+    transition: width 0.3s ease;
+}
+
+.notes-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.notes-panel.collapsed {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    padding: 0;
+    align-items: center;
+}
+
+.notes-panel.collapsed .notes-content {
+    display: none;
+}
+
+/* Кнопка сворачивания */
+.toggle-notes-btn {
+    background: var(--month-bg);
+    border: none;
+    color: var(--month-text);
+    font-size: 18px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-top: auto;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.toggle-notes-btn:hover {
+    transform: scale(1.1);
 }
 
 #monthYearLabel {
@@ -409,39 +453,6 @@ body {
     opacity: 0.4;
 }
 
-.month-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 11px;
-}
-
-.toggle-notes-btn {
-    background: none;
-    border: none;
-    color: var(--month-text);
-    font-size: 18px;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    opacity: 0.7;
-    transition: opacity 0.2s, background-color 0.2s;
-}
-
-.toggle-notes-btn:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Скрытие содержимого */
-.notes-content.collapsed {
-    display: none;
-}
-
 /* === Адаптивность === */
 
 /* Мобильные устройства (до 768px) */
@@ -461,6 +472,10 @@ body {
         padding: 15px;
         order: 2;
         /* перемещаем вниз */
+    }
+
+    .toggle-notes-btn {
+        display: none !important;
     }
 
     #monthYearLabel {
@@ -555,7 +570,7 @@ body {
 
     .toggle-notes-btn {
         display: none;
-    }
+    }    
 }
 
 /* Планшеты и маленькие десктопы (768px - 1024px) */
