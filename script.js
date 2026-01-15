@@ -557,12 +557,41 @@ function renderTasks(dateStr) {
         deleteBtn.className = 'edit-btn delete-btn';
         deleteBtn.textContent = 'Удалить';
         deleteBtn.addEventListener('click', () => {
-            if (confirm('Удалить задачу?')) {
+            // Создаем кастомный попап подтверждения
+            const confirmPopup = document.createElement('div');
+            confirmPopup.className = 'confirm-popup';
+            confirmPopup.innerHTML = `
+                <div class="popup-content">
+                    <h3>Удалить задачу?</h3>
+                    <p>Это действие нельзя отменить.</p>
+                    <div class="popup-buttons">
+                        <button class="popup-btn cancel">Отмена</button>
+                        <button class="popup-btn delete">Удалить</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(confirmPopup);
+            
+            // Обработчики кнопок
+            confirmPopup.querySelector('.cancel').onclick = () => {
+                document.body.removeChild(confirmPopup);
+            };
+            
+            confirmPopup.querySelector('.delete').onclick = () => {
                 tasks.splice(index, 1);
                 saveTasksForDate(dateStr, tasks);
                 renderTasks(dateStr);
-                editPopup.remove();
-            }
+                document.body.removeChild(confirmPopup);
+                editPopup.remove(); // Закрываем и основной попап
+            };
+            
+            // Закрытие по клику вне попапа
+            confirmPopup.onclick = (e) => {
+                if (e.target === confirmPopup) {
+                    document.body.removeChild(confirmPopup);
+                }
+            };
         });
 
         const cancelBtn = document.createElement('button');
