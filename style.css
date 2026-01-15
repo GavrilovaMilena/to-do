@@ -264,22 +264,6 @@ body {
     color: var(--text-secondary);
 }
 
-/* Колонка воскресенья */
-.sunday-column {
-    grid-column: 6;
-    min-height: 100px;
-    max-height: 368px;
-    /* максимальная высота */
-    background: var(--bg-day);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    /* скролл при переполнении */
-    margin: 0 4px;
-}
 
 .week-header {
     display: grid;
@@ -291,20 +275,51 @@ body {
     padding: 20px 20px 0;
 }
 
-.day-column {
+/* Фиксируем высоту колонки и делаем внутренний скролл */
+.day-column,
+.sunday-column {
     display: flex;
     flex-direction: column;
-    min-height: 100px;
-    max-height: 369px;
-    /* максимальная высота */
+    min-height: 200px;
+    /* увеличим минимальную высоту */
+    max-height: 368px;
+    /* ограничим максимальную высоту */
     background: var(--bg-day);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 10px;
-    margin: 0 4px;
     transition: background 0.2s, border-color 0.2s;
+}
+
+.sunday-column {
+    grid-column: 6;
+}
+
+/* Контейнер для задач с прокруткой */
+.tasks-container {
+    flex: 1;
     overflow-y: auto;
-    /* скролл при переполнении */
+    margin-top: 8px;
+    padding-right: 4px;
+    /* компенсация скролла */
+}
+
+/* Стили для скроллбара (опционально) */
+.tasks-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tasks-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.tasks-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }
 
 /* Стилизация скроллбара (опционально) */
