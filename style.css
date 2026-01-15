@@ -758,7 +758,8 @@ body {
 
     /* Вертикальный календарь на мобильных */
     .week-header,
-    .week-grid {
+    .week-grid,
+    .sunday-section {
         grid-template-columns: 1fr !important;
         display: block !important;
         gap: 0 !important;
