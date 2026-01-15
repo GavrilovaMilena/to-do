@@ -268,12 +268,17 @@ body {
 .sunday-column {
     grid-column: 6;
     min-height: 100px;
+    max-height: 368px;
+    /* максимальная высота */
     background: var(--bg-day);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 10px;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
+    /* скролл при переполнении */
+    margin: 0 4px;
 }
 
 .week-header {
@@ -290,12 +295,39 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100px;
+    max-height: 369px;
+    /* максимальная высота */
     background: var(--bg-day);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 10px;
     margin: 0 4px;
     transition: background 0.2s, border-color 0.2s;
+    overflow-y: auto;
+    /* скролл при переполнении */
+}
+
+/* Стилизация скроллбара (опционально) */
+.day-column::-webkit-scrollbar,
+.sunday-column::-webkit-scrollbar {
+    width: 6px;
+}
+
+.day-column::-webkit-scrollbar-track,
+.sunday-column::-webkit-scrollbar-track {
+    background: var(--bg-panel);
+    border-radius: 3px;
+}
+
+.day-column::-webkit-scrollbar-thumb,
+.sunday-column::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.day-column::-webkit-scrollbar-thumb:hover,
+.sunday-column::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
 }
 
 .day-label {

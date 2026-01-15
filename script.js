@@ -61,7 +61,7 @@ let isRendering = false;
 const notesPanel = document.getElementById('notesPanel');
 const weekHeader = document.getElementById('weekHeader');
 const weekGrid = document.getElementById('weekGrid');
-const sundayContainer = document.getElementById('sundayContainer'); // ← добавлено
+const sundaySection = document.getElementById('sundaySection'); // ← исправлено на sundaySection
 const weekLabelEl = document.getElementById('weekLabel');
 const monthYearLabel = document.getElementById('monthYearLabel');
 const prevBtn = document.getElementById('prevWeek');
@@ -235,7 +235,6 @@ function renderWeek(monday) {
 
     weekHeader.innerHTML = '';
     weekGrid.innerHTML = '';
-    const sundaySection = document.getElementById('sundaySection');
     if (sundaySection) sundaySection.innerHTML = '';
 
     currentMonday = monday;
@@ -293,6 +292,7 @@ function renderWeek(monday) {
 
         const tasksContainer = document.createElement('div');
         tasksContainer.className = 'tasks-container';
+        tasksContainer.style.flex = '1 1 auto'; // ← обеспечивает растягивание контейнера задач
         tasksContainer.dataset.date = dateStr;
         dayCol.appendChild(tasksContainer);
 
@@ -338,6 +338,7 @@ function renderWeek(monday) {
 
         const tasksContainer = document.createElement('div');
         tasksContainer.className = 'tasks-container';
+        tasksContainer.style.flex = '1 1 auto'; // ← обеспечивает растягивание контейнера задач
         tasksContainer.dataset.date = dateStr;
         dayCol.appendChild(tasksContainer);
 
