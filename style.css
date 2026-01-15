@@ -243,14 +243,42 @@ body {
 .week-header,
 .week-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 8px;
     padding: 0 20px;
 }
 
+/* Секция для воскресенья */
+.sunday-section {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 20px;
+}
+
+/* Заголовок воскресенья */
+.sunday-header {
+    grid-column: 6;
+    text-align: center;
+    font-weight: bold;
+    color: var(--text-secondary);
+}
+
+/* Колонка воскресенья */
+.sunday-column {
+    grid-column: 6;
+    min-height: 100px;
+    background: var(--bg-day);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
 .week-header {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     text-align: center;
     font-weight: bold;
     margin-bottom: 10px;

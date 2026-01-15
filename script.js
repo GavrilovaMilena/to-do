@@ -61,6 +61,7 @@ let isRendering = false;
 const notesPanel = document.getElementById('notesPanel');
 const weekHeader = document.getElementById('weekHeader');
 const weekGrid = document.getElementById('weekGrid');
+const sundayContainer = document.getElementById('sundayContainer'); // ← добавлено
 const weekLabelEl = document.getElementById('weekLabel');
 const monthYearLabel = document.getElementById('monthYearLabel');
 const prevBtn = document.getElementById('prevWeek');
@@ -234,20 +235,25 @@ function renderWeek(monday) {
 
     weekHeader.innerHTML = '';
     weekGrid.innerHTML = '';
+    const sundaySection = document.getElementById('sundaySection');
+    if (sundaySection) sundaySection.innerHTML = '';
 
     currentMonday = monday;
     weekLabelEl.textContent = formatWeekLabel(monday);
     monthYearLabel.textContent = formatMonthYear(monday);
 
-    const weekDates = [];
+    // Формируем все 7 дней
+    const allDates = [];
     for (let i = 0; i < 7; i++) {
-        weekDates.push(addDays(monday, i));
+        allDates.push(addDays(monday, i));
     }
 
     const today = new Date();
     const todayStr = formatDate(today);
 
-    weekDates.forEach((date) => {
+    // === Заголовки Пн-Сб ===
+    const weekdaysAndSat = allDates.slice(0, 6); // Пн-Сб (0-5)
+    weekdaysAndSat.forEach((date) => {
         const dateStr = formatDate(date);
         const dayLabelFull = formatDayLabel(date);
 
@@ -257,6 +263,12 @@ function renderWeek(monday) {
             headerElement.classList.add('today-day');
         }
         weekHeader.appendChild(headerElement);
+    });
+
+    // === Колонки Пн-Сб ===
+    weekdaysAndSat.forEach((date) => {
+        const dateStr = formatDate(date);
+        const dayLabelFull = formatDayLabel(date);
 
         const dayCol = document.createElement('div');
         dayCol.className = 'day-column';
@@ -287,7 +299,53 @@ function renderWeek(monday) {
         weekGrid.appendChild(dayCol);
     });
 
-    weekDates.forEach(date => {
+    // === Воскресенье (заголовок + колонка) ===
+    if (sundaySection) {
+        const sundayDate = allDates[6]; // Вс (индекс 6)
+        const dateStr = formatDate(sundayDate);
+        const dayLabelFull = formatDayLabel(sundayDate);
+
+        // Заголовок воскресенья
+        const sundayHeader = document.createElement('div');
+        sundayHeader.className = 'sunday-header';
+        sundayHeader.textContent = dayLabelFull;
+        if (dateStr === todayStr) {
+            sundayHeader.classList.add('today-day');
+        }
+        sundaySection.appendChild(sundayHeader);
+
+        // Колонка воскресенья
+        const dayCol = document.createElement('div');
+        dayCol.className = 'sunday-column';
+        dayCol.dataset.date = dateStr;
+
+        const dayLabel = document.createElement('div');
+        dayLabel.className = 'day-label';
+        dayLabel.textContent = dayLabelFull;
+        dayCol.appendChild(dayLabel);
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'task-input';
+        input.placeholder = 'Новая задача...';
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && input.value.trim()) {
+                addTask(dateStr, input.value.trim());
+                input.value = '';
+            }
+        });
+        dayCol.appendChild(input);
+
+        const tasksContainer = document.createElement('div');
+        tasksContainer.className = 'tasks-container';
+        tasksContainer.dataset.date = dateStr;
+        dayCol.appendChild(tasksContainer);
+
+        sundaySection.appendChild(dayCol);
+    }
+
+    // Рендерим задачи для всех дней
+    allDates.forEach(date => {
         const dateStr = formatDate(date);
         renderTasks(dateStr);
     });
@@ -331,6 +389,7 @@ function getDragAfterElement(container, y) {
 }
 
 function renderTasks(dateStr) {
+    // Ищем контейнер в любом месте
     const container = document.querySelector(`.tasks-container[data-date="${dateStr}"]`);
     if (!container) return;
 
@@ -357,7 +416,8 @@ function renderTasks(dateStr) {
 
         row.addEventListener('dragend', () => {
             row.classList.remove('dragging');
-            document.querySelectorAll('.day-column.drag-over').forEach(el => {
+            // Поддержка подсветки для обоих типов колонок
+            document.querySelectorAll('.day-column.drag-over, .sunday-column.drag-over').forEach(el => {
                 el.classList.remove('drag-over');
             });
         });
@@ -544,10 +604,10 @@ function renderTasks(dateStr) {
 
 // Глобальные обработчики для подсветки дней
 document.addEventListener('dragover', (e) => {
-    const dayColumn = e.target.closest('.day-column');
+    const dayColumn = e.target.closest('.day-column, .sunday-column');
     if (!dayColumn) return;
 
-    document.querySelectorAll('.day-column.drag-over').forEach(el => {
+    document.querySelectorAll('.day-column.drag-over, .sunday-column.drag-over').forEach(el => {
         el.classList.remove('drag-over');
     });
     dayColumn.classList.add('drag-over');
@@ -555,14 +615,13 @@ document.addEventListener('dragover', (e) => {
 
 document.addEventListener('dragleave', (e) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-        document.querySelectorAll('.day-column.drag-over').forEach(el => {
+        document.querySelectorAll('.day-column.drag-over, .sunday-column.drag-over').forEach(el => {
             el.classList.remove('drag-over');
         });
     }
 });
-
 document.addEventListener('drop', () => {
-    document.querySelectorAll('.day-column.drag-over').forEach(el => {
+    document.querySelectorAll('.day-column.drag-over, .sunday-column.drag-over').forEach(el => {
         el.classList.remove('drag-over');
     });
 });
