@@ -7,6 +7,23 @@ function getMonday(date) {
     return d;
 }
 
+// Функция для оборачивания выделенного текста
+function wrapText(textarea, prefix, suffix) {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const before = text.substring(0, start);
+    const selected = text.substring(start, end);
+    const after = text.substring(end);
+
+    textarea.value = before + prefix + selected + suffix + after;
+    textarea.focus();
+    
+    // Устанавливаем курсор после вставленного текста
+    const newCursorPos = start + prefix.length;
+    textarea.setSelectionRange(newCursorPos, newCursorPos + selected.length);
+}
+
 function addDays(date, days) {
     const result = new Date(date);
     result.setDate(result.getDate() + days);
@@ -435,117 +452,157 @@ function renderTasks(dateStr) {
 
         const textSpan = document.createElement('span');
         textSpan.className = `task-text ${task.completed ? 'completed' : ''}`;
-        textSpan.textContent = task.text;
+        // Поддержка Markdown: **жирный**, *курсив*
+        let html = task.text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>');
+        textSpan.innerHTML = html;
 
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'task-actions';
 
-        const colorBtn = document.createElement('button');
-        colorBtn.className = 'task-btn';
-        colorBtn.innerHTML = `
+        // === Единый попап редактирования ===
+        const editBtn = document.createElement('button');
+        editBtn.className = 'task-btn';
+        editBtn.innerHTML = `
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
     </svg>
 `;
-        colorBtn.title = 'Цвет и удалить';
-        const colorPicker = document.createElement('div');
-        colorPicker.className = 'color-picker';
+        editBtn.title = 'Редактировать задачу';
 
-        // === Опция "Без цвета" ===
+        // Создаем попап
+        const editPopup = document.createElement('div');
+        editPopup.className = 'edit-task-popup';
+
+        // Поле ввода с поддержкой форматирования
+        const textArea = document.createElement('textarea');
+        textArea.value = task.text;
+        textArea.placeholder = 'Текст задачи...';
+        textArea.className = 'edit-task-textarea';
+
+        // Кнопки форматирования
+        const formatBtns = document.createElement('div');
+        formatBtns.className = 'format-buttons';
+
+        const boldBtn = document.createElement('button');
+        boldBtn.className = 'format-btn';
+        boldBtn.title = 'Жирный';
+        boldBtn.innerHTML = '<b>B</b>';
+        boldBtn.addEventListener('click', () => wrapText(textArea, '**', '**'));
+
+        const italicBtn = document.createElement('button');
+        italicBtn.className = 'format-btn';
+        italicBtn.title = 'Курсив';
+        italicBtn.innerHTML = '<i>I</i>';
+        italicBtn.addEventListener('click', () => wrapText(textArea, '*', '*'));
+
+        formatBtns.appendChild(boldBtn);
+        formatBtns.appendChild(italicBtn);
+
+        // Цвета
+        const colorSection = document.createElement('div');
+        colorSection.className = 'edit-color-section';
+        colorSection.innerHTML = '<div class="edit-section-title">Цвет:</div>';
+
         const noColorOption = document.createElement('div');
-        noColorOption.className = 'color-option';
-        noColorOption.style.backgroundColor = 'transparent';
-        noColorOption.style.border = '2px dashed var(--border-color)';
+        noColorOption.className = 'edit-color-option no-color';
         noColorOption.title = 'Без цвета';
         noColorOption.addEventListener('click', () => {
-            task.bgColor = null; // Убираем цвет
-            saveTasksForDate(dateStr, tasks);
-            renderTasks(dateStr);
-            colorPicker.style.display = 'none';
+            task.bgColor = null;
+            updateColorSelection();
         });
-        colorPicker.appendChild(noColorOption);
+        colorSection.appendChild(noColorOption);
 
-        // Цветовые опции
         Object.entries(COLORS).forEach(([name, hex]) => {
             const colorOption = document.createElement('div');
-            colorOption.className = 'color-option';
+            colorOption.className = 'edit-color-option';
             colorOption.style.backgroundColor = hex;
+            colorOption.dataset.color = name;
             colorOption.addEventListener('click', () => {
                 task.bgColor = name;
-                saveTasksForDate(dateStr, tasks);
-                renderTasks(dateStr);
-                colorPicker.style.display = 'none';
+                updateColorSelection();
             });
-            colorPicker.appendChild(colorOption);
+            colorSection.appendChild(colorOption);
         });
 
-        // === Кнопка удаления (корзина) ===
-        const deleteOption = document.createElement('div');
-        deleteOption.className = 'color-option delete-option';
-        deleteOption.title = 'Удалить задачу';
-        deleteOption.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 6h18"></path>
-        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-    </svg>
-`;
-        deleteOption.addEventListener('click', () => {
-            // Создаем кастомный попап подтверждения
-            const popup = document.createElement('div');
-            popup.className = 'confirm-popup';
-            popup.innerHTML = `
-                <div class="popup-content">
-                    <h3>Удалить задачу?</h3>
-                    <p>Это действие нельзя отменить.</p>
-                    <div class="popup-buttons">
-                        <button class="popup-btn cancel">Отмена</button>
-                        <button class="popup-btn delete">Удалить</button>
-                    </div>
-                </div>
-            `;
+        function updateColorSelection() {
+            colorSection.querySelectorAll('.edit-color-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            if (task.bgColor) {
+                const selected = colorSection.querySelector(`[data-color="${task.bgColor}"]`);
+                if (selected) selected.classList.add('selected');
+            } else {
+                noColorOption.classList.add('selected');
+            }
+        }
+        updateColorSelection();
 
-            document.body.appendChild(popup);
+        // Кнопки действий
+        const actionBtns = document.createElement('div');
+        actionBtns.className = 'edit-action-buttons';
 
-            // Обработчики кнопок
-            popup.querySelector('.cancel').onclick = () => {
-                document.body.removeChild(popup);
-                colorPicker.style.display = 'none';
-            };
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'edit-btn save-btn';
+        saveBtn.textContent = 'Сохранить';
+        saveBtn.addEventListener('click', () => {
+            task.text = textArea.value;
+            saveTasksForDate(dateStr, tasks);
+            renderTasks(dateStr);
+            editPopup.remove();
+        });
 
-            popup.querySelector('.delete').onclick = () => {
-                const tasks = getTasksForDate(dateStr);
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'edit-btn delete-btn';
+        deleteBtn.textContent = 'Удалить';
+        deleteBtn.addEventListener('click', () => {
+            if (confirm('Удалить задачу?')) {
                 tasks.splice(index, 1);
                 saveTasksForDate(dateStr, tasks);
                 renderTasks(dateStr);
-                document.body.removeChild(popup);
-                colorPicker.style.display = 'none';
-            };
-
-            // Закрытие по клику вне попапа
-            popup.onclick = (e) => {
-                if (e.target === popup) {
-                    document.body.removeChild(popup);
-                    colorPicker.style.display = 'none';
-                }
-            };
-        });
-        colorPicker.appendChild(deleteOption);
-
-        colorBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.querySelectorAll('.color-picker').forEach(p => p.style.display = 'none');
-            colorPicker.style.display = colorPicker.style.display === 'block' ? 'none' : 'block';
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!colorPicker.contains(e.target) && e.target !== colorBtn) {
-                colorPicker.style.display = 'none';
+                editPopup.remove();
             }
         });
 
-        colorBtn.appendChild(colorPicker);
-        actionsDiv.appendChild(colorBtn);
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'edit-btn cancel-btn';
+        cancelBtn.textContent = 'Отмена';
+        cancelBtn.addEventListener('click', () => {
+            editPopup.remove();
+        });
+
+        actionBtns.appendChild(saveBtn);
+        actionBtns.appendChild(deleteBtn);
+        actionBtns.appendChild(cancelBtn);
+
+        // Собираем попап
+        editPopup.appendChild(textArea);
+        editPopup.appendChild(formatBtns);
+        editPopup.appendChild(colorSection);
+        editPopup.appendChild(actionBtns);
+
+        // Показываем попап
+        editBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Удаляем другие попапы
+            document.querySelectorAll('.edit-task-popup').forEach(p => p.remove());
+            document.body.appendChild(editPopup);
+            
+            // Позиционируем рядом с кнопкой
+            const rect = editBtn.getBoundingClientRect();
+            editPopup.style.top = (rect.bottom + window.scrollY) + 'px';
+            editPopup.style.left = (rect.left + window.scrollX) + 'px';
+        });
+
+        // Закрытие по клику вне
+        document.addEventListener('click', (e) => {
+            if (!editPopup.contains(e.target) && e.target !== editBtn) {
+                editPopup.remove();
+            }
+        });
+
+        actionsDiv.appendChild(editBtn);
 
         row.appendChild(checkbox);
         row.appendChild(textSpan);
